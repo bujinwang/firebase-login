@@ -17,7 +17,7 @@ export default class Auth extends Component {
         super(props);
         this.state = {err: ''};
         this.login = this.login.bind(this);
-        this.logout = this.login.bind(this);
+        this.logout = this.logout.bind(this);
         this.signUp = this.signUp.bind(this);
     }
 
@@ -28,9 +28,9 @@ export default class Auth extends Component {
                 <input id="pass" ref="password" type="password" placeholder="Enter your Password:"/>
 
                 <p>Err{this.state.err}</p>
-                <button onClick={this.login}>Log In</button>
+                <button id="login" onClick={this.login}>Log In</button>
                 <button onClick={this.signUp}>Sign up</button>
-                <button onClick={this.logout}>Log Out</button>
+                <button id="logout" className="hide" onClick={this.logout}>Log Out</button>
             </div>
         );
     }
@@ -44,6 +44,13 @@ export default class Auth extends Component {
         const auth = firebase.auth();
 
         const promise = auth.signInWithEmailAndPassword(email, password);
+        promise.then(() => {
+            var lout = document.getElementById("logout");
+            lout.classList.remove('hide');
+            var lin = document.getElementById("login");
+            lin.classList.add('hide');
+            this.setState({err: "YOu have successfully logged in..."});
+        });
         promise.catch(e => {
             var err = e.message;
             console.log("Login error: " + err);
@@ -52,7 +59,16 @@ export default class Auth extends Component {
     }
 
     logout() {
+        const auth = firebase.auth();
 
+        const promise = auth.signOut();
+
+        var lout = document.getElementById("logout");
+        lout.classList.add('hide');
+        this.setState({err: "YOu have successfully logged out..."});
+
+        var lin = document.getElementById("login");
+        lin.classList.remove('hide');
     }
 
     signUp() {
